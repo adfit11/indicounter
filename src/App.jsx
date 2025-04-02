@@ -120,7 +120,7 @@ export default function App() {
   };
 
   return (
-    <div className="p-4 max-w-full mx-auto">
+    <div className="p-4 max-w-full mx-auto bg-gray-100">
       {/* Row selection buttons */}
       <div className="grid grid-cols-4 gap-2 mb-6">
         {rows.map(row => (
@@ -131,7 +131,7 @@ export default function App() {
       </div>
 
       {/* Section tables */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-4">
         {sections.map(section => (
           <div key={section} className="mb-6">
             {/* Editable section title */}
@@ -147,24 +147,24 @@ export default function App() {
 
             {/* Data table */}
             <div className="overflow-x-auto text-sm">
-              <table className="w-full table-auto border border-black">
-                <thead>
+              <table className="w-full table-fixed border border-black bg-white">
+                {/* <thead>
                   <tr>
                     <th className="border">&nbsp;</th>
                     {[...Array(20)].map((_, i) => (
                       <th key={i} className="border text-center">{i + 1}</th>
                     ))}
                     <th className="border">Count</th>
-                  </tr>
-                </thead>
+                  </tr> 
+                </thead> */}
                 <tbody>
                   {rows.map(row => (
                     <tr key={row}>
-                      <td className="border text-center font-bold">{row}</td>
+                      <td className="border text-center font-bold text-xs">{row}</td>
                       {[...Array(20)].map((_, i) => (
                         <td
                           key={i}
-                          className="border text-center cursor-pointer"
+                          className="border text-center cursor-pointer text-xs"
                           onClick={() => handleRemove(section, row, i)}
                         >
                           {data[section][row][i] ?? ''}
