@@ -103,19 +103,27 @@ export default function App() {
     });
   };
 
-  const generateCSV = () => {
-  };
 
   // Function to export data as a CSV file
   const handleExport = () => {
     const rowsOut = ["Section,Row,Index,Value"];
-    sections.forEach(section => {
-      rows.forEach(row => {
-        data[section][row].forEach((val, i) => {
-          rowsOut.push(`${section},${row},${i + 1},${val}`);
-        });
+  
+    sections.forEach((section) => {
+      const sectionTitle = titles[section] || section;
+  
+      rows.forEach((row) => {
+        const values = data[section][row] || [];
+  
+        if (values.length === 0) {
+          rowsOut.push(`${sectionTitle},${row},,`);
+        } else {
+          values.forEach((val, i) => {
+            rowsOut.push(`${sectionTitle},${row},${i + 1},${val}`);
+          });
+        }
       });
     });
+  
     const blob = new Blob([rowsOut.join('\n')], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -124,6 +132,7 @@ export default function App() {
     a.click();
     URL.revokeObjectURL(url);
   };
+  
 
   // Function to clear all data after user confirmation
   const handleClearAll = () => {
@@ -151,11 +160,20 @@ export default function App() {
   
   const handleEmailData = () => {
     const rowsOut = ["Section,Row,Index,Value"];
-    sections.forEach(section => {
-      rows.forEach(row => {
-        data[section][row].forEach((val, i) => {
-          rowsOut.push(`${section},${row},${i + 1},${val}`);
-        });
+  
+    sections.forEach((section) => {
+      const sectionTitle = titles[section] || section;
+  
+      rows.forEach((row) => {
+        const values = data[section][row] || [];
+  
+        if (values.length === 0) {
+          rowsOut.push(`${sectionTitle},${row},,`);
+        } else {
+          values.forEach((val, i) => {
+            rowsOut.push(`${sectionTitle},${row},${i + 1},${val}`);
+          });
+        }
       });
     });
   
