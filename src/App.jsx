@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from './components/ui/dialog';
+import emailjs from 'emailjs-com';
+
 
 // Define the rows and sections for the table
 const rows = ['Q1', 'Q2', 'Q3', 'Q4'];
@@ -101,6 +103,20 @@ export default function App() {
     });
   };
 
+
+
+
+  const generateCSV = () => {
+ 
+  };
+
+
+
+
+
+
+
+
   // Function to export data as a CSV file
   const handleExport = () => {
     const rowsOut = ["Section,Row,Index,Value"];
@@ -138,6 +154,51 @@ export default function App() {
       }
     }
   };
+
+
+// email functionality
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+  
+  const handleEmailData = () => {
+    const rowsOut = ["Section,Row,Index,Value"];
+    sections.forEach(section => {
+      rows.forEach(row => {
+        data[section][row].forEach((val, i) => {
+          rowsOut.push(`${section},${row},${i + 1},${val}`);
+        });
+      });
+    });
+  
+    const csv = rowsOut.join('\n');
+  
+    emailjs
+      .send(
+        'service_z3j3yiq',
+        'template_uw4dohx',
+        {
+          message: csv,
+          to_email: userEmail,
+        },
+        'xt5JrYcxWei4mP7ff'
+      )
+      .then(() => {
+        alert('Email sent successfully!');
+        setEmailOpen(false);
+        setUserEmail('');
+      })
+      .catch((err) => {
+        console.error('Email failed:', err);
+        alert('Failed to send email.');
+      });
+  };
+  
+
+
+
+
+
+
 
   // Function to get unique and sorted values from all sections and rows
   const getUniqueSortedValues = () => {
@@ -292,6 +353,27 @@ export default function App() {
       <div>
         <Button onClick={handleExport} className="col-span-2 mt-2">Export Data</Button> &nbsp;
         <Button onClick={handleClearAll} className="col-span-2 mt-2 bg-red-600 hover:bg-red-700">Clear All</Button>
+      
+        <Dialog open={emailOpen} onOpenChange={setEmailOpen}>
+  <DialogTrigger asChild>
+    <Button className="mt-2 ml-2" variant="outline">
+      Email Data
+    </Button>
+  </DialogTrigger>
+  <DialogContent>
+    <DialogTitle>Send CSV by Email</DialogTitle>
+    <Input
+      type="email"
+      placeholder="Enter your email address"
+      value={userEmail}
+      onChange={(e) => setUserEmail(e.target.value)}
+    />
+    <Button className="mt-4 w-full" onClick={handleEmailData}>
+      Send Email
+    </Button>
+  </DialogContent>
+</Dialog>
+
       </div>
     </div>
   );
