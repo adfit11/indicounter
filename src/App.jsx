@@ -5,7 +5,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle } from './components/
 
 // Define the rows and sections for the table
 const rows = ['Q1', 'Q2', 'Q3', 'Q4'];
-const sections = ['Stat A', 'Stat B', 'Stat C', 'Stat D', 'Stat E', 'Stat F', 'Stat G', 'Stat H', 'Stat I'];
+const sections = ['Stat A', 'Stat B', 'Stat C', 'Stat D', 'Stat E', 'Stat F', 'Stat G', 'Stat H'];
 
 const pastelColors = [
   { name: 'Pink', value: '#FFEBEE' },
@@ -162,7 +162,7 @@ export default function App() {
         {sections.map(section => (
           <div
             key={section}
-            className="mb-2 p-2 rounded"
+            className="mb-0 p-4 rounded"
             style={{ backgroundColor: sectionColors[section] || '#ffffff' }}
           >
 
@@ -204,22 +204,47 @@ export default function App() {
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
-                  <DialogTitle>Add number to {section} - Row {selectedRow}</DialogTitle>
-                  <Input
-                    type="number"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Enter number"
-                  />
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    {getUniqueSortedValues().map(val => (
-                      <Button key={val} variant="outline" onClick={() => handleAdd(val)}>
-                        {val}
-                      </Button>
-                    ))}
-                  </div>
-                  <Button className="mt-4 w-full" onClick={() => handleAdd(parseInt(inputValue))}>Confirm</Button>
-                </DialogContent>
+  <DialogTitle>Add number to {section} - Row {selectedRow}</DialogTitle>
+
+  <form
+    onSubmit={(e) => {
+      e.preventDefault();
+      handleAdd(parseInt(inputValue));
+    }}
+    className="space-y-4"
+  >
+    <Input
+      type="number"
+      value={inputValue}
+      onChange={(e) => setInputValue(e.target.value)}
+      placeholder="Enter number"
+      autoFocus
+    />
+
+    {/* Suggestions — use buttons that don't steal Enter keypress */}
+    <div className="flex flex-wrap gap-2">
+  {getUniqueSortedValues().map((val) => (
+    <button
+      key={val}
+      type="button"
+      onClick={() => handleAdd(val)}
+      className="rounded px-3 py-1 text-sm text-black"
+      style={{
+        backgroundColor: pastelColors[val % pastelColors.length].value,
+      }}
+    >
+      {val}
+    </button>
+  ))}
+</div>
+
+    {/* Confirm should be the only submit */}
+    <Button type="submit" className="w-full">
+      Confirm
+    </Button>
+  </form>
+</DialogContent>
+
               </Dialog>
             </div>
 
