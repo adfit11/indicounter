@@ -103,19 +103,8 @@ export default function App() {
     });
   };
 
-
-
-
   const generateCSV = () => {
- 
   };
-
-
-
-
-
-
-
 
   // Function to export data as a CSV file
   const handleExport = () => {
@@ -207,7 +196,7 @@ export default function App() {
   {/* Logo (left-aligned) */}
   <div className="flex-shrink-0">
     <img
-      src="public/logo.png" // or your actual path
+      src="/public/logo.png"
       alt="Site logo"
       className="h-10 w-auto object-contain"
     />
