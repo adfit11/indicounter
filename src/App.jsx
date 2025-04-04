@@ -10,14 +10,14 @@ const rows = ['Q1', 'Q2', 'Q3', 'Q4'];
 const sections = ['Stat A', 'Stat B', 'Stat C', 'Stat D', 'Stat E', 'Stat F', 'Stat G', 'Stat H'];
 
 const pastelColors = [
-  { name: 'Pink', value: '#FFEBEE' },
-  { name: 'Peach', value: '#FFF3E0' },
-  { name: 'Lemon', value: '#FFFDE7' },
-  { name: 'Mint', value: '#E8F5E9' },
-  { name: 'Sky', value: '#E3F2FD' },
-  { name: 'Lavender', value: '#F3E5F5' },
-  { name: 'Aqua', value: '#E0F7FA' },
-  { name: 'Coral', value: '#FBE9E7' },
+  { name: 'Blue', value: '#1f77b4' },
+  { name: 'Orange', value: '#ff7f0e' },
+  { name: 'Green', value: '#2ca02c' },
+  { name: 'Red', value: '#d62728' },
+  { name: 'Purple', value: '#9467bd' },
+  { name: 'Brown', value: '#8c564b' },
+  { name: 'Pink', value: '#e377c2' },
+  { name: 'Gray', value: '#7f7f7f' },
 ];
 
 // Initialize titles for each section
@@ -193,13 +193,6 @@ export default function App() {
       });
   };
   
-
-
-
-
-
-
-
   // Function to get unique and sorted values from all sections and rows
   const getUniqueSortedValues = () => {
     const values = new Set();
@@ -208,15 +201,33 @@ export default function App() {
   };
 
   return (
-    <div className="p-4 max-w-full mx-auto">
+    <div className="p-4 max-w-full mx-auto bg-gray-100">
       {/* Row selection buttons */}
-      <div className="grid grid-cols-4 gap-2 mb-6">
-        {rows.map(row => (
-          <Button key={row} onClick={() => setSelectedRow(row)} className={selectedRow === row ? 'bg-red-500' : ''}>
-            {row}
-          </Button>
-        ))}
-      </div>
+      <div className="flex items-center justify-between flex-wrap mb-6 w-full">
+  {/* Logo (left-aligned) */}
+  <div className="flex-shrink-0">
+    <img
+      src="public/logo.png" // or your actual path
+      alt="Site logo"
+      className="h-10 w-auto object-contain"
+    />
+  </div>
+
+  {/* Row buttons (right-aligned, wrapping on small screens) */}
+  <div className="flex gap-2 flex-wrap justify-end">
+  {rows.map((row) => (
+  <Button
+    key={row}
+    onClick={() => setSelectedRow(row)}
+    className={`w-24 sm:w-40 justify-center ${
+      selectedRow === row ? 'bg-red-500' : ''
+    }`}
+  >
+    {row}
+  </Button>
+))}
+  </div>
+</div>
 
       {/* Section tables */}
       <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-2 gap-4">
@@ -283,19 +294,15 @@ export default function App() {
     />
 
     {/* Suggestions — use buttons that don't steal Enter keypress */}
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2 mt-4">
   {getUniqueSortedValues().map((val) => (
-    <button
+    <Button
       key={val}
       type="button"
       onClick={() => handleAdd(val)}
-      className="rounded px-3 py-1 text-sm text-black"
-      style={{
-        backgroundColor: pastelColors[val % pastelColors.length].value,
-      }}
     >
       {val}
-    </button>
+    </Button>
   ))}
 </div>
 
