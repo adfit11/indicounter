@@ -7,6 +7,17 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle } from './components/
 const rows = ['Q1', 'Q2', 'Q3', 'Q4'];
 const sections = ['Stat A', 'Stat B', 'Stat C', 'Stat D', 'Stat E', 'Stat F', 'Stat G', 'Stat H', 'Stat I'];
 
+const pastelColors = [
+  { name: 'Pink', value: '#FFEBEE' },
+  { name: 'Peach', value: '#FFF3E0' },
+  { name: 'Lemon', value: '#FFFDE7' },
+  { name: 'Mint', value: '#E8F5E9' },
+  { name: 'Sky', value: '#E3F2FD' },
+  { name: 'Lavender', value: '#F3E5F5' },
+  { name: 'Aqua', value: '#E0F7FA' },
+  { name: 'Coral', value: '#FBE9E7' },
+];
+
 // Initialize titles for each section
 const initialTitles = Object.fromEntries(sections.map(section => [section, section]));
 
@@ -48,6 +59,20 @@ export default function App() {
 
   // State to track the currently active section for adding data
   const [activeSection, setActiveSection] = useState(null);
+
+  // state to track table colours
+  const [sectionColors, setSectionColors] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("counter-section-colors")) || {};
+    } catch {
+      return {};
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem("counter-section-colors", JSON.stringify(sectionColors));
+  }, [sectionColors]);
+
 
   // Save data to localStorage whenever it changes
   useEffect(() => {
@@ -106,8 +131,10 @@ export default function App() {
           }, {});
           return acc;
         }, {});
+
         setData(cleared);
         localStorage.setItem("counter-data", JSON.stringify(cleared));
+
       }
     }
   };
@@ -120,7 +147,7 @@ export default function App() {
   };
 
   return (
-    <div className="p-4 max-w-full mx-auto bg-gray-100">
+    <div className="p-4 max-w-full mx-auto">
       {/* Row selection buttons */}
       <div className="grid grid-cols-4 gap-2 mb-6">
         {rows.map(row => (
@@ -131,19 +158,73 @@ export default function App() {
       </div>
 
       {/* Section tables */}
-      <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-2 gap-4">
         {sections.map(section => (
-          <div key={section} className="mb-6">
-            {/* Editable section title */}
-            <Input
-              value={titles[section]}
-              onChange={(e) => {
-                const newTitles = { ...titles, [section]: e.target.value };
-                setTitles(newTitles);
-                localStorage.setItem("counter-titles", JSON.stringify(newTitles));
-              }}
-              className="text-md font-bold mb-2 border-b"
-            />
+          <div
+            key={section}
+            className="mb-2 p-2 rounded"
+            style={{ backgroundColor: sectionColors[section] || '#ffffff' }}
+          >
+
+            {/* Editable section title + ADD button side-by-side */}
+            <div className="flex items-center gap-2 mb-2">
+              <Input
+                value={titles[section]}
+                onChange={(e) => {
+                  const newTitles = { ...titles, [section]: e.target.value };
+                  setTitles(newTitles);
+                  localStorage.setItem("counter-titles", JSON.stringify(newTitles));
+                }}
+                className="text-md font-bold border-b"
+              />
+
+              <select
+                value={sectionColors[section] || ''}
+                onChange={(e) =>
+                  setSectionColors({ ...sectionColors, [section]: e.target.value })
+                }
+                className="border rounded px-2 py-1 text-sm w-24"
+                title="Select background color"
+              >
+                <option value="">No Color</option>
+                {pastelColors.map(({ name, value }) => (
+                  <option key={value} value={value}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    onClick={() => setActiveSection(section)}
+                    className="bg-cyan-400 whitespace-nowrap w-40"
+                  >
+                    ADD
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle>Add number to {section} - Row {selectedRow}</DialogTitle>
+                  <Input
+                    type="number"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Enter number"
+                  />
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {getUniqueSortedValues().map(val => (
+                      <Button key={val} variant="outline" onClick={() => handleAdd(val)}>
+                        {val}
+                      </Button>
+                    ))}
+                  </div>
+                  <Button className="mt-4 w-full" onClick={() => handleAdd(parseInt(inputValue))}>Confirm</Button>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+
+
 
             {/* Data table */}
             <div className="overflow-x-auto text-sm">
@@ -177,31 +258,7 @@ export default function App() {
               </table>
             </div>
 
-            {/* Add data dialog */}
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={() => setActiveSection(section)} className="bg-cyan-400 mt-2 w-full">
-                  ADD
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogTitle>Add number to {section} - Row {selectedRow}</DialogTitle>
-                <Input
-                  type="number"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Enter number"
-                />
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {getUniqueSortedValues().map(val => (
-                    <Button key={val} variant="outline" onClick={() => handleAdd(val)}>
-                      {val}
-                    </Button>
-                  ))}
-                </div>
-                <Button className="mt-4 w-full" onClick={() => handleAdd(parseInt(inputValue))}>Confirm</Button>
-              </DialogContent>
-            </Dialog>
+
           </div>
         ))}
       </div>
