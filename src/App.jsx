@@ -216,7 +216,7 @@ export default function App() {
     <img
       src="/logo.png"
       alt="Site logo"
-      className="h-10 w-auto object-contain"
+      className="h-10 mb-4 w-auto object-contain"
     />
   </div>
 
@@ -226,7 +226,7 @@ export default function App() {
   <Button
     key={row}
     onClick={() => setSelectedRow(row)}
-    className={`w-24 sm:w-40 justify-center ${
+    className={`sm:w-20 md:w-30 lg:w-44 xl:w-60 justify-center ${
       selectedRow === row ? 'bg-red-500' : ''
     }`}
   >
@@ -237,7 +237,7 @@ export default function App() {
 </div>
 
       {/* Section tables */}
-      <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-4">
         {sections.map(section => (
           <div
             key={section}
