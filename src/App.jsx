@@ -214,7 +214,7 @@ export default function App() {
   {/* Logo (left-aligned) */}
   <div className="flex-shrink-0">
     <img
-      src="/public/logo.png"
+      src="/logo.png"
       alt="Site logo"
       className="h-10 w-auto object-contain"
     />
