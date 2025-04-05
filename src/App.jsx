@@ -3,6 +3,8 @@ import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from './components/ui/dialog';
 import emailjs from 'emailjs-com';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
+
 
 
 // Define the rows and sections for the table
@@ -107,13 +109,13 @@ export default function App() {
   // Function to export data as a CSV file
   const handleExport = () => {
     const rowsOut = ["Section,Row,Index,Value"];
-  
+
     sections.forEach((section) => {
       const sectionTitle = titles[section] || section;
-  
+
       rows.forEach((row) => {
         const values = data[section][row] || [];
-  
+
         if (values.length === 0) {
           rowsOut.push(`${sectionTitle},${row},,`);
         } else {
@@ -123,7 +125,7 @@ export default function App() {
         }
       });
     });
-  
+
     const blob = new Blob([rowsOut.join('\n')], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -132,7 +134,7 @@ export default function App() {
     a.click();
     URL.revokeObjectURL(url);
   };
-  
+
 
   // Function to clear all data after user confirmation
   const handleClearAll = () => {
@@ -154,19 +156,19 @@ export default function App() {
   };
 
 
-// email functionality
+  // email functionality
   const [emailOpen, setEmailOpen] = useState(false);
   const [userEmail, setUserEmail] = useState('');
-  
+
   const handleEmailData = () => {
     const rowsOut = ["Section,Row,Index,Value"];
-  
+
     sections.forEach((section) => {
       const sectionTitle = titles[section] || section;
-  
+
       rows.forEach((row) => {
         const values = data[section][row] || [];
-  
+
         if (values.length === 0) {
           rowsOut.push(`${sectionTitle},${row},,`);
         } else {
@@ -176,9 +178,9 @@ export default function App() {
         }
       });
     });
-  
+
     const csv = rowsOut.join('\n');
-  
+
     emailjs
       .send(
         'service_z3j3yiq',
@@ -199,7 +201,7 @@ export default function App() {
         alert('Failed to send email.');
       });
   };
-  
+
   // Function to get unique and sorted values from all sections and rows
   const getUniqueSortedValues = () => {
     const values = new Set();
@@ -211,30 +213,29 @@ export default function App() {
     <div className="p-4 max-w-full mx-auto bg-gray-100">
       {/* Row selection buttons */}
       <div className="flex items-center justify-between flex-wrap mb-6 w-full">
-  {/* Logo (left-aligned) */}
-  <div className="flex-shrink-0">
-    <img
-      src="/logo.png"
-      alt="Site logo"
-      className="h-10 mb-4 w-auto object-contain"
-    />
-  </div>
+        {/* Logo (left-aligned) */}
+        <div className="flex-shrink-0">
+          <img
+            src="/logo.png"
+            alt="Site logo"
+            className="h-10 mb-4 w-auto object-contain"
+          />
+        </div>
 
-  {/* Row buttons (right-aligned, wrapping on small screens) */}
-  <div className="flex gap-2 flex-wrap justify-end">
-  {rows.map((row) => (
-  <Button
-    key={row}
-    onClick={() => setSelectedRow(row)}
-    className={`sm:w-20 md:w-30 lg:w-44 xl:w-60 justify-center ${
-      selectedRow === row ? 'bg-red-500' : ''
-    }`}
-  >
-    {row}
-  </Button>
-))}
-  </div>
-</div>
+        {/* Row buttons (right-aligned, wrapping on small screens) */}
+        <div className="flex gap-2 flex-wrap justify-end">
+          {rows.map((row) => (
+            <Button
+              key={row}
+              onClick={() => setSelectedRow(row)}
+              className={`sm:w-20 md:w-30 lg:w-44 xl:w-60 justify-center ${selectedRow === row ? 'bg-red-500' : ''
+                }`}
+            >
+              {row}
+            </Button>
+          ))}
+        </div>
+      </div>
 
       {/* Section tables */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-4">
@@ -282,15 +283,19 @@ export default function App() {
                     ADD
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
-  <DialogTitle>Add number to {section} - Row {selectedRow}</DialogTitle>
+                <DialogPrimitive.Content
+  className="fixed top-[10vh] left-1/2 -translate-x-1/2 translate-y-0 w-full max-w-md bg-white p-6 rounded-lg shadow-lg z-50 focus:outline-none"
+>
+  <DialogPrimitive.Title className="text-lg font-semibold">
+    Add number to {section} – Row {selectedRow}
+  </DialogPrimitive.Title>
 
   <form
     onSubmit={(e) => {
       e.preventDefault();
       handleAdd(parseInt(inputValue));
     }}
-    className="space-y-4"
+    className="space-y-4 mt-4"
   >
     <Input
       type="number"
@@ -300,25 +305,24 @@ export default function App() {
       autoFocus
     />
 
-    {/* Suggestions — use buttons that don't steal Enter keypress */}
     <div className="flex flex-wrap gap-2 mt-4">
-  {getUniqueSortedValues().map((val) => (
-    <Button
-      key={val}
-      type="button"
-      onClick={() => handleAdd(val)}
-    >
-      {val}
-    </Button>
-  ))}
-</div>
+      {getUniqueSortedValues().map((val) => (
+        <Button
+          key={val}
+          type="button"
+          onClick={() => handleAdd(val)}
+          className="bg-blue-100 hover:bg-blue-200 text-black"
+        >
+          {val}
+        </Button>
+      ))}
+    </div>
 
-    {/* Confirm should be the only submit */}
     <Button type="submit" className="w-full">
       Confirm
     </Button>
   </form>
-</DialogContent>
+</DialogPrimitive.Content>
 
               </Dialog>
             </div>
@@ -367,26 +371,26 @@ export default function App() {
       <div>
         <Button onClick={handleExport} className="col-span-2 mt-2">Export Data</Button> &nbsp;
         <Button onClick={handleClearAll} className="col-span-2 mt-2 bg-red-600 hover:bg-red-700">Clear All</Button>
-      
+
         <Dialog open={emailOpen} onOpenChange={setEmailOpen}>
-  <DialogTrigger asChild>
-    <Button className="mt-2 ml-2" variant="outline">
-      Email Data
-    </Button>
-  </DialogTrigger>
-  <DialogContent>
-    <DialogTitle>Send CSV by Email</DialogTitle>
-    <Input
-      type="email"
-      placeholder="Enter your email address"
-      value={userEmail}
-      onChange={(e) => setUserEmail(e.target.value)}
-    />
-    <Button className="mt-4 w-full" onClick={handleEmailData}>
-      Send Email
-    </Button>
-  </DialogContent>
-</Dialog>
+          <DialogTrigger asChild>
+            <Button className="mt-2 ml-2" variant="outline">
+              Email Data
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogTitle>Send CSV by Email</DialogTitle>
+            <Input
+              type="email"
+              placeholder="Enter your email address"
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+            />
+            <Button className="mt-4 w-full" onClick={handleEmailData}>
+              Send Email
+            </Button>
+          </DialogContent>
+        </Dialog>
 
       </div>
     </div>
